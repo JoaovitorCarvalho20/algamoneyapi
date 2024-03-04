@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -76,7 +77,7 @@ public class CategoriaResource {
      * @return Optional contendo a categoria encontrada, ou vazio se não existir.
      */
     
-    //funçao para listar uma categoria
+    //funçao para busca uma categoria
     @GetMapping("/{codigo}")
     public Optional<Categoria> buscarCategoriaPeloCodigo(@PathVariable Long codigo) {
         return categoriasRepository.findById(codigo);
@@ -88,5 +89,6 @@ public class CategoriaResource {
     public void remover (@PathVariable Long codigo) {
     	categoriasRepository.deleteById( codigo);
     }
+    
 }
 
