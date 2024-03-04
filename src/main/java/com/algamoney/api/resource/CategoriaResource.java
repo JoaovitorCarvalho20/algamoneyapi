@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,8 +75,18 @@ public class CategoriaResource {
      * @param codigo O código da categoria a ser buscada.
      * @return Optional contendo a categoria encontrada, ou vazio se não existir.
      */
+    
+    //funçao para listar uma categoria
     @GetMapping("/{codigo}")
     public Optional<Categoria> buscarCategoriaPeloCodigo(@PathVariable Long codigo) {
         return categoriasRepository.findById(codigo);
     }
+    
+  //Função para remover uma categoria
+    @DeleteMapping("/{codigo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT) //204 
+    public void remover (@PathVariable Long codigo) {
+    	categoriasRepository.deleteById( codigo);
+    }
 }
+
