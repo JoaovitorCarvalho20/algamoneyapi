@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.algamoney.api.event.RecursoCriadoEvent;
 import com.algamoney.api.model.Categoria;
 import com.algamoney.api.repository.CategoriasRepository;
 
@@ -38,7 +40,8 @@ public class CategoriaResource {
      */
     @Autowired
     private CategoriasRepository categoriasRepository;
-
+    @Autowired
+    private ApplicationEventPublisher publisher;
     /**
      * Retorna uma lista de todas as categorias.
      *
@@ -60,12 +63,9 @@ public class CategoriaResource {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
         Categoria categoriaSalva = categoriasRepository.save(categoria);
-
         // Constrói a URI da nova categoria e configura o cabeçalho de localização na resposta.
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{codigo}").buildAndExpand(categoriaSalva.getCodigo()).toUri();
-        response.setHeader("Location", uri.toASCIIString());
-
-        return ResponseEntity.created(uri).body(categoriaSalva);
+       publisher.publishEvent(new RecursoCriadoEvent(this,response,categoriaSalva.getCodigo()));
+       return ResponseEntity.status(HttpStatus.CREATED).body( categoriaSalva);
     }
 
     /**
